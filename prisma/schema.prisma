@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id          Int       @id @default(autoincrement())
+  source      String    // "greenhouse", "lever", or "ashby"
+  sourceJobId String
+  company     String
+  title       String
+  url         String
+  location    String
+  remote      Boolean
+  postedAt    DateTime? // nullable for undated jobs
+  ingestedAt  DateTime  @default(now())
+
+  @@unique([source, sourceJobId])
+  @@index([postedAt])
+  @@index([ingestedAt])
+}
