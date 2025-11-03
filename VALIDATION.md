@@ -5,33 +5,43 @@ This guide helps you validate that the Job & Intel Assistant is properly set up 
 ## Quick Validation Checklist
 
 ### 1. Build Process ✓
+
 ```bash
 npm run build
 ```
+
 **Expected:** `✓ Compiled successfully` with no errors
 
 ### 2. Linting ✓
+
 ```bash
 npm run lint
 ```
+
 **Expected:** No output (no errors or warnings)
 
 ### 3. Type Checking ✓
+
 ```bash
 npx tsc --noEmit
 ```
+
 **Expected:** No errors
 
 ### 4. Code Formatting ✓
+
 ```bash
 npm run format
 ```
+
 **Expected:** Files processed (unchanged if already formatted)
 
 ### 5. Prisma Client Generation ✓
+
 ```bash
 npm run prisma:generate
 ```
+
 **Expected:** `✔ Generated Prisma Client` message
 
 ### 6. Project Structure Validation
@@ -39,6 +49,7 @@ npm run prisma:generate
 Verify these files exist:
 
 **Core Files:**
+
 - ✓ `app/page.tsx` - Main UI
 - ✓ `app/api/ingest/route.ts` - Ingestion endpoint
 - ✓ `app/api/jobs/route.ts` - Jobs API endpoint
@@ -50,34 +61,42 @@ Verify these files exist:
 - ✓ `vercel.json` - Cron configuration
 
 **Config Files:**
+
 - ✓ `.env.example` - Environment template
 - ✓ `.prettierrc` - Prettier config
 - ✓ `.eslintrc.js` or `eslint.config.mjs` - ESLint config
 - ✓ `package.json` - Dependencies
 
 **Documentation:**
+
 - ✓ `README.md` - Project documentation
 - ✓ `SUPABASE_SETUP.md` - Database setup guide
 
 ### 7. API Endpoint Validation
 
 #### Health Check
+
 ```bash
 curl http://localhost:3000/api/health
 ```
+
 **Expected:** `{"status":"ok","timestamp":"..."}`
 
 #### Jobs Endpoint
+
 ```bash
 curl http://localhost:3000/api/jobs?limit=5
 ```
+
 **Expected:** JSON array of jobs (empty if no data yet)
 
 #### Ingest Endpoint (Manual Trigger)
+
 ```bash
 curl -X POST http://localhost:3000/api/ingest \
   -H "Authorization: Bearer your-cron-secret-here"
 ```
+
 **Expected:** `{"success":true,"ingested":0,"failed":[]}` (or with actual counts)
 
 ### 8. Database Schema Validation
@@ -86,7 +105,9 @@ curl -X POST http://localhost:3000/api/ingest \
 npx prisma db push
 npx prisma studio
 ```
-**Expected:** 
+
+**Expected:**
+
 - Schema pushes successfully
 - Prisma Studio opens in browser
 - Job table visible with correct columns
@@ -94,6 +115,7 @@ npx prisma studio
 ### 9. Environment Variables Validation
 
 Check `.env.local` has all required variables:
+
 ```bash
 # Without revealing sensitive values
 if (Test-Path .env.local) {
@@ -103,6 +125,7 @@ if (Test-Path .env.local) {
 ```
 
 **Required Variables:**
+
 - ✓ `DATABASE_URL`
 - ✓ `COMPANIES_GREENHOUSE`
 - ✓ `COMPANIES_LEVER`
@@ -112,11 +135,13 @@ if (Test-Path .env.local) {
 ### 10. UI Validation
 
 Start dev server:
+
 ```bash
 npm run dev
 ```
 
 Visit `http://localhost:3000` and check:
+
 - ✓ Page loads without errors
 - ✓ Table renders (even if empty)
 - ✓ Responsive design works
@@ -136,7 +161,7 @@ After deploying to Vercel:
 
 3. **Test Cron Job**
    - Settings → Cron Jobs
-   - Verify `/api/ingest` shows "0 17 * * *" schedule
+   - Verify `/api/ingest` shows "0 17 \* \* \*" schedule
    - Can manually trigger for testing
 
 4. **Test Production Endpoints**
@@ -165,35 +190,44 @@ Test with real company slugs:
 ## Common Issues and Solutions
 
 ### Issue: Prisma Client not generated
+
 **Solution:** Run `npm run prisma:generate`
 
 ### Issue: Build fails with "Cannot find module"
+
 **Solution:** Delete `node_modules` and `.next`, then `npm install`
 
 ### Issue: Database connection errors
-**Solution:** 
+
+**Solution:**
+
 - Verify `.env.local` DATABASE_URL is correct
 - Check Supabase project is active
 - Ensure connection pooling is enabled
 
 ### Issue: Cron job not running on Vercel
+
 **Solution:**
+
 - Verify `vercel.json` is in root directory
 - Check Vercel project settings for cron job
 - Ensure CRON_SECRET is set in Vercel environment variables
 
 ### Issue: API returns unauthorized
+
 **Solution:** Check that Authorization header matches CRON_SECRET exactly
 
 ## Performance Checks
 
 ### Expected Metrics:
+
 - **Build time:** < 30 seconds
 - **Lighthouse score:** > 80
 - **API response time:** < 500ms
 - **Database queries:** < 100ms per query
 
 ### Load Test (Optional):
+
 ```bash
 # Install apache-bench if available
 ab -n 100 -c 10 http://localhost:3000/api/jobs
@@ -234,4 +268,3 @@ echo "=== Validation Complete ==="
 ---
 
 If all checks pass, your Job & Intel Assistant is ready for production!
-
