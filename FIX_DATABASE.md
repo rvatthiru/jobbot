@@ -3,6 +3,7 @@
 You're seeing: **"Database connection issue. Check DATABASE_URL and ensure database schema is created."**
 
 This means one of two things:
+
 1. `DATABASE_URL` is not set in Vercel, OR
 2. The database tables haven't been created yet
 
@@ -52,6 +53,7 @@ Follow these steps to fix it:
 7. Click **"Save"**
 
 **Example of correct format:**
+
 ```
 postgresql://postgres.abcdefghijklmnop:MyStrongPassword123!@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 ```
@@ -107,6 +109,7 @@ After setting environment variables, you need to redeploy:
 4. Wait for deployment to complete (~1-2 minutes)
 
 **OR** just push a new commit to trigger auto-deploy:
+
 ```bash
 git commit --allow-empty -m "Trigger redeploy"
 git push
@@ -116,18 +119,21 @@ git push
 
 1. Visit your Vercel app URL
 2. You should now see:
+
    ```
    Job & Intel Assistant
    Latest data engineering, analytics, and BI roles
-   
+
    [Empty table with message:]
    No jobs found. Jobs are ingested daily at 9 AM PT.
    ```
 
 3. Test the API directly:
+
    ```bash
    curl https://your-app.vercel.app/api/jobs
    ```
+
    Should return: `[]` (empty array)
 
 4. Test health endpoint:
@@ -168,13 +174,15 @@ git push
 ### Error: "Can't reach database server"
 
 **Solutions**:
+
 - Check DATABASE_URL is correct
 - Make sure you're using **Connection pooling** URI (port 6543), not direct connection
 - Verify Supabase project is active and not paused
 
 ### Error: "P1001: Can't reach database server"
 
-**Solution**: 
+**Solution**:
+
 - Check DATABASE_URL
 - Verify Supabase project is active
 - Try using direct connection URI instead of pooler (port 5432)
@@ -194,6 +202,7 @@ Once all checkboxes are done, your database should be connected! 🎉
 ## Next Steps
 
 After the database is working:
+
 1. Set other environment variables in Vercel:
    - `COMPANIES_GREENHOUSE` (e.g., `airbnb,netflix`)
    - `COMPANIES_LEVER` (e.g., `company1`)
@@ -201,10 +210,10 @@ After the database is working:
    - `CRON_SECRET` (any random string)
 
 2. Test ingestion:
+
    ```bash
    curl -X POST https://your-app.vercel.app/api/ingest \
      -H "Authorization: Bearer YOUR_CRON_SECRET"
    ```
 
 3. Jobs will appear automatically after the cron job runs at 9 AM PT daily.
-

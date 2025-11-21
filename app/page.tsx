@@ -74,7 +74,24 @@ export default function Home() {
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-            <p className="text-red-800 dark:text-red-200">{error}</p>
+            <p className="text-red-800 dark:text-red-200 font-semibold mb-2">{error}</p>
+            {error.includes('Database connection') && (
+              <div className="text-sm text-red-700 dark:text-red-300 mt-2">
+                <p className="mb-2">
+                  <strong>Quick Fix Steps:</strong>
+                </p>
+                <ol className="list-decimal list-inside space-y-1 ml-2">
+                  <li>Check Vercel → Settings → Environment Variables</li>
+                  <li>Verify DATABASE_URL is set</li>
+                  <li>
+                    Visit{' '}
+                    <code className="bg-red-100 dark:bg-red-900 px-1 rounded">/api/debug</code> for
+                    detailed diagnostics
+                  </li>
+                  <li>See FIX_DATABASE.md in the repository for step-by-step guide</li>
+                </ol>
+              </div>
+            )}
           </div>
         )}
 
