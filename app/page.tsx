@@ -36,14 +36,17 @@ export default function Home() {
       try {
         const response = await fetch('/api/jobs?limit=25');
         if (!response.ok) {
-          throw new Error('Failed to fetch jobs');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.details || errorData.error || 'Failed to fetch jobs');
         }
         const data = await response.json();
         setJobs(data);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching jobs:', err);
-        setError('Failed to load jobs. Please try again later.');
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to load jobs. Please try again later.';
+        setError(errorMessage);
         setLoading(false);
       }
     }

@@ -11,6 +11,7 @@ This error typically means the database connection is failing or the database ha
 Go to your Vercel project → Settings → Environment Variables
 
 **Required Variables:**
+
 ```
 DATABASE_URL=postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
 COMPANIES_GREENHOUSE=company1,company2
@@ -29,6 +30,7 @@ CRON_SECRET=your-secret-key-here
 4. Search for: `DATABASE_URL`, `Prisma`, `error`
 
 **Common Log Errors:**
+
 - ❌ `Can't reach database server` → DATABASE_URL is wrong or database is down
 - ❌ `PrismaClient is unable to run` → Prisma client not generated
 - ❌ `relation "Job" does not exist` → Database schema not pushed
@@ -48,6 +50,7 @@ Follow the steps in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md):
 After setting DATABASE_URL, you need to create the tables:
 
 **Option A: Using Prisma Studio (Local)**
+
 ```bash
 npm run prisma:push
 ```
@@ -86,6 +89,7 @@ Visit: `https://your-app.vercel.app/api/health`
 Should return: `{"status":"ok","timestamp":"..."}`
 
 **Test Jobs API:**
+
 ```bash
 curl https://your-app.vercel.app/api/jobs
 ```
@@ -135,6 +139,7 @@ curl -X POST https://your-app.vercel.app/api/ingest \
 ```
 
 Expected response:
+
 ```json
 {
   "success": true,
@@ -145,6 +150,7 @@ Expected response:
 ```
 
 If you see `ingested: 0`, that's normal if:
+
 - Company slugs are placeholder values
 - Companies have no matching jobs
 - All jobs are older than 14 days
@@ -152,6 +158,7 @@ If you see `ingested: 0`, that's normal if:
 ### Common Issues
 
 #### Issue: Empty company slugs
+
 **Symptom:** Ingestion returns 0 jobs
 **Fix:** Update environment variables with real company slugs
 
@@ -162,20 +169,26 @@ COMPANIES_ASHBY=company2
 ```
 
 #### Issue: Authentication failed for database
+
 **Symptom:** Database connection errors in logs
-**Fix:** 
+**Fix:**
+
 - Check that password in DATABASE_URL doesn't have special characters
 - If it does, URL-encode them (e.g., `@` becomes `%40`)
 
 #### Issue: Prisma client not found
+
 **Symptom:** `Module not found: @prisma/client`
 **Fix:** Postinstall script should handle this, but if not:
+
 - Check `package.json` has `"postinstall": "prisma generate"`
 - Redeploy on Vercel
 
 #### Issue: Cron job not running
+
 **Symptom:** No jobs ingested automatically
 **Fix:**
+
 - Check Vercel → Settings → Cron Jobs
 - Verify `/api/ingest` is listed
 - Manually trigger via curl (see above)
@@ -198,12 +211,14 @@ If still stuck, check:
 ### Expected Behavior
 
 ✅ **Healthy State:**
+
 - Home page loads with "No jobs found" message
 - `/api/health` returns 200 OK
 - `/api/jobs` returns `[]` (empty array)
 - After ingestion, `/api/jobs` returns job array
 
 ❌ **Unhealthy State:**
+
 - Home page shows "Failed to load jobs"
 - `/api/health` returns 500 error
 - Vercel logs show database connection errors
@@ -211,4 +226,3 @@ If still stuck, check:
 ---
 
 **Most Common Solution:** Set up Supabase database and add DATABASE_URL to Vercel environment variables!
-

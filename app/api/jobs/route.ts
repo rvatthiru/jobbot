@@ -30,7 +30,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(jobs);
   } catch (error) {
     console.error('[Jobs] Error fetching jobs:', error);
-    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isDatabaseError =
+      errorMessage.includes('P1001') ||
+      errorMessage.includes("Can't reach database") ||
+      errorMessage.includes('does not exist') ||
+      errorMessage.includes('relation') ||
+      !process.env.DATABASE_URL;
+
+    return NextResponse.json(
+      {
+        error: 'Failed to fetch jobs',
+        details: isDatabaseError
+          ? 'Database connection issue. Check DATABASE_URL and ensure database schema is created.'
+          : errorMessage,
+      },
+      { status: 500 }
+    );
   }
 }
 
